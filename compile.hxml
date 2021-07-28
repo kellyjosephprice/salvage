@@ -1,6 +1,7 @@
 -cp src
 -lib heaps
 -lib hlsdl
--hl out/main.c
+-lib random
+-hl hello.hl
 -main Main
 -D windowSize=1280x720
