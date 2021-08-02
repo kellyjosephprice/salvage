@@ -25,7 +25,8 @@ class Main extends hxd.App {
 		super.init();
 
 		s2d.scaleMode = Stretch(640, 360);
-		//s2d.scaleMode = Stretch(1024, 576);
+		//s2d.scaleMode = Stretch(960, 540);
+		//s2d.scaleMode = Stretch(1280, 720);
 
 		var font:h2d.Font = hxd.res.DefaultFont.get();
 		var tf = new h2d.Text(font);
@@ -64,6 +65,10 @@ class Main extends hxd.App {
 		for(coords in new HexShapedIterator(4)) {
 			var tile = new Bitmap(hxd.Res.sandtile.toTile(), s2d);
 			var pixels = coordToPixels(coords);
+
+			//var trail = new Bitmap(hxd.Res.trail.toTile(), s2d);
+			//trail.x = pixels.x;
+			//trail.y = pixels.y;
 
 			tile.x = pixels.x;
 			tile.y = pixels.y;
@@ -141,6 +146,7 @@ class Main extends hxd.App {
 	private function coordToPixels(coords: IPoint): IPoint {
 		var colOffset:Int = Math.abs(coords.y) % 2 == 1 ? 0 : - 32;
 
-		return new IPoint(Std.int(s2d.width / 2) + coords.x * 64 + colOffset, Std.int(s2d.height / 2) + coords.y * 28 - 16);
+		return new IPoint(Std.int(s2d.width / 2) + coords.x * 64 + colOffset,
+				Std.int(s2d.height / 2) + coords.y * 30 - 16);
 	}
 }
