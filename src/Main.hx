@@ -16,7 +16,6 @@ class Main extends hxd.App {
 	var state: State;
 
 	static function main() {
-		trace("starting!");
 		hxd.Res.initEmbed();
 		new Main();
 	}
@@ -47,6 +46,10 @@ class Main extends hxd.App {
 				component: null,
 				coords: new IPoint(0, 0),
 				offset: new IPoint(16, 0),
+			}, {
+				component: null,
+				coords: new IPoint(0, -1),
+				offset: new IPoint(16, 0),
 			}],
 		};
 
@@ -65,10 +68,6 @@ class Main extends hxd.App {
 		for(coords in new HexShapedIterator(4)) {
 			var tile = new Bitmap(hxd.Res.sandtile.toTile(), s2d);
 			var pixels = coordToPixels(coords);
-
-			//var trail = new Bitmap(hxd.Res.trail.toTile(), s2d);
-			//trail.x = pixels.x;
-			//trail.y = pixels.y;
 
 			tile.x = pixels.x;
 			tile.y = pixels.y;
@@ -104,13 +103,16 @@ class Main extends hxd.App {
 		var selector = new Bitmap(hxd.Res.tileselector.toTile(), s2d);
 		var cursor = new Bitmap(hxd.Res.tileselectorgreen.toTile(), s2d);
 		var toaster = new Bitmap(hxd.Res.toaster.toTile(), s2d);
+		var brobear = new Bitmap(hxd.Res.brobear.toTile(), s2d);
 		state.selected.component = selector;
 		state.cursor.component = cursor;
 		state.units[0].component = toaster;
+		state.units[1].component = brobear;
 
 		moveTo(state.selected);
 		moveTo(state.cursor);
 		moveTo(state.units[0]);
+		moveTo(state.units[1]);
 
 		function onEvent(event : hxd.Event) {
 			if (event.kind == EKeyUp) { return; }
@@ -139,6 +141,7 @@ class Main extends hxd.App {
 
 	private function moveTo(entity: Entity):Void {
 		var pixels = coordToPixels(entity.coords);
+
 		entity.component.x = pixels.x + (entity.offset == null ? 0 : entity.offset.x);
 		entity.component.y = pixels.y + (entity.offset == null ? 0 : entity.offset.y);
 	}

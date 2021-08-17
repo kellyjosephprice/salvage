@@ -14,11 +14,11 @@ hello.hl: assets $(wildcard src/*) compile.hxml
 .PHONY=assets
 assets: $(wildcard res/*)
 
+res/brobear.png: assets/brobear.png
+	cp assets/brobear.png res/brobear.png
+
 res/sandtile.png: assets/sand-tile.png
 	cp assets/sand-tile.png res/sandtile.png
-
-res/trail.png: assets/trails.png
-	cp assets/trails.png res/trail.png
 
 res/toaster.png: assets/toaster-32.png
 	cp assets/toaster-32.png res/toaster.png
