@@ -24,9 +24,12 @@
 * paperclip
 * desk lamp
 * UFO
+* vat incubated thing
+* vat perserved? thing
 
 ### mechanic ideas
 
 * global power pool for characters and upgrades
 	* constraint based build outs
 *
+

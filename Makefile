@@ -1,5 +1,11 @@
-.PHONY=dev
-dev: run
+.PHONY=watch
+watch:
+	while true; do \
+		make run & \
+		KID=$$!; \
+		inotifywait -qre close_write .; \
+	  kill -9 $$KID || true; \
+	done
 
 .PHONY=run
 run: build
