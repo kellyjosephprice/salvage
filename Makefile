@@ -1,15 +1,28 @@
+.ONESHELL:
+
+PID_FILE=.salvage.pid
+
 .PHONY=watch
 watch:
-	while true; do \
-		make run & \
-		KID=$$!; \
-		inotifywait -qre close_write .; \
-	  kill -9 $$KID || true; \
+	while true; do
+		make run
+		inotifywait -re modify --exclude '/\.' .
+		sleep 1
 	done
 
 .PHONY=run
-run: build
-	hl hello.hl
+run: stop build
+	hl hello.hl & \
+	PID=$$!
+	echo $${PID} > ${PID_FILE}
+
+.PHONY=stop
+stop:
+	if test -f ${PID_FILE}; then
+		PID=`cat ${PID_FILE}`
+		rm -rf ${PID_FILE}
+		kill -9 $$PID || true
+	fi
 
 .PHONY=build
 build: hello.hl
@@ -35,5 +48,5 @@ res/tileselector.png: assets/tile-selector.png
 res/tileselectorgreen.png: assets/tile-selector-green.png
 	cp assets/tile-selector-green.png res/tileselectorgreen.png
 
-clean:
+clean: stop
 	rm -rf hello.hl
