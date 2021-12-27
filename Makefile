@@ -7,12 +7,12 @@ watch:
 	while true; do
 		make run
 		inotifywait -re modify --exclude '/\.' .
-		sleep 1
+		sleep 0.5
 	done
 
 .PHONY=run
 run: stop build
-	hl hello.hl & \
+	hl hello.hl &
 	PID=$$!
 	echo $${PID} > ${PID_FILE}
 
@@ -28,7 +28,9 @@ stop:
 build: hello.hl
 
 hello.hl: assets $(wildcard src/*) compile.hxml
+	@echo -n "\033[31m"
 	haxe compile.hxml
+	@echo -n "\033[0m"
 
 .PHONY=assets
 assets: $(wildcard res/*)

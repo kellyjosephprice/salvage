@@ -2,15 +2,9 @@ import h2d.Bitmap;
 import h2d.Scene;
 import h2d.col.IPoint;
 import h2d.col.IPolygon;
+
 import Field;
 import Coordinates;
-
-typedef State = {
-	field: Field,
-	selected: Entity,
-	cursor: Entity,
-	units: Array<Entity>,
-};
 
 class Main extends hxd.App {
 	var state: State;
@@ -24,15 +18,13 @@ class Main extends hxd.App {
 		super.init();
 
 		s2d.scaleMode = Stretch(640, 360);
-		//s2d.scaleMode = Stretch(960, 540);
-		//s2d.scaleMode = Stretch(1280, 720);
 
 		var font:h2d.Font = hxd.res.DefaultFont.get();
 		var tf = new h2d.Text(font);
 		tf.text = "Salvage WIP";
 		s2d.addChild(tf);
 
-		state = {
+		state = new State({
 			field: null,
 			selected: {
 				component: null,
@@ -51,7 +43,7 @@ class Main extends hxd.App {
 				coords: new IPoint(0, -1),
 				offset: new IPoint(16, 0),
 			}],
-		};
+		});
 
 		var polygon = new IPolygon([
 			new IPoint(1, 14),
@@ -64,41 +56,8 @@ class Main extends hxd.App {
 			new IPoint(1, 29),
 		]);
 
-		var field = new Field();
-		for(coords in new HexShapedIterator(4)) {
-			var tile = new Bitmap(hxd.Res.sandtile.toTile(), s2d);
-			var pixels = coordToPixels(coords);
-
-			tile.x = pixels.x;
-			tile.y = pixels.y;
-
-			var points: Array<IPoint> = [];
-			for(point in polygon) {
-				points.push(point.add(pixels));
-			}
-
-			var entity: Entity = {
-				coords: coords,
-				component: tile,
-				polygon: new IPolygon(points),
-			};
-			field.set(coords, entity);
-
-			var interaction = new h2d.Interactive(64, 36, s2d, entity.polygon.toPolygon().getCollider());
-			interaction.onClick = function(event: hxd.Event) {
-				if (state.cursor.coords.x == coords.x && state.cursor.coords.y == coords.y) {
-					state.selected.coords.x = coords.x;
-					state.selected.coords.y = coords.y;
-					state.units[0].coords.x = coords.x;
-					state.units[0].coords.y = coords.y;
-				} else {
-					state.cursor.coords.x = coords.x;
-					state.cursor.coords.y = coords.y;
-				}
-			}
-		}
-
-		state.field = field;
+		state.field = new Field(s2d);
+		state.field.initOnClick(state);
 
 		var selector = new Bitmap(hxd.Res.tileselector.toTile(), s2d);
 		var cursor = new Bitmap(hxd.Res.tileselectorgreen.toTile(), s2d);
@@ -109,10 +68,10 @@ class Main extends hxd.App {
 		state.units[0].component = toaster;
 		state.units[1].component = brobear;
 
-		moveTo(state.selected);
-		moveTo(state.cursor);
-		moveTo(state.units[0]);
-		moveTo(state.units[1]);
+		state.field.moveTo(state.selected);
+		state.field.moveTo(state.cursor);
+		state.field.moveTo(state.units[0]);
+		state.field.moveTo(state.units[1]);
 
 		function onEvent(event : hxd.Event) {
 			if (event.kind == EKeyUp) { return; }
@@ -134,22 +93,8 @@ class Main extends hxd.App {
 	}
 
 	override function update(dt:Float) {
-		moveTo(state.selected);
-		moveTo(state.cursor);
-		moveTo(state.units[0]);
-	}
-
-	private function moveTo(entity: Entity):Void {
-		var pixels = coordToPixels(entity.coords);
-
-		entity.component.x = pixels.x + (entity.offset == null ? 0 : entity.offset.x);
-		entity.component.y = pixels.y + (entity.offset == null ? 0 : entity.offset.y);
-	}
-
-	private function coordToPixels(coords: IPoint): IPoint {
-		var colOffset:Int = Math.abs(coords.y) % 2 == 1 ? 0 : - 32;
-
-		return new IPoint(Std.int(s2d.width / 2) + coords.x * 64 + colOffset,
-				Std.int(s2d.height / 2) + coords.y * 30 - 16);
+		state.field.moveTo(state.selected);
+		state.field.moveTo(state.cursor);
+		state.field.moveTo(state.units[0]);
 	}
 }
