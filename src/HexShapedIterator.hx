@@ -1,16 +1,15 @@
-import h2d.col.IPoint;
 import Coordinates;
 
 class HexShapedIterator {
 	public var size: Int;
-	public var current: CubeIPoint;
+	public var current: CubeCoordinates;
 
 	public function new(size: Int) {
 		this.size = size;
 		this.current = { x: -1, z: -size, y: size };
 	}
 
-	public function next(): IPoint {
+	public function next(): Coordinates {
 		this.current.x += 1;
 		this.current.y = -this.current.x - this.current.z;
 
@@ -25,6 +24,8 @@ class HexShapedIterator {
 				this.current.y = -this.current.z - this.current.x;
 			}
 		}
+
+		trace(this.current);
 
 		return this.current.toOddr();
 	}

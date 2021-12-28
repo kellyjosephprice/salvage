@@ -29,6 +29,8 @@ class Field extends ObjectMap<IPoint, Entity> {
 			var tile = new Bitmap(hxd.Res.sandtile.toTile(), s2d);
 			var pixels = this.coordToPixels(coords);
 
+			trace("in iterator", coords);
+
 			tile.x = pixels.x;
 			tile.y = pixels.y;
 
@@ -49,35 +51,34 @@ class Field extends ObjectMap<IPoint, Entity> {
 	public function initOnClick(state: State) {
 		for(coords in this.keys()) {
 			var entity = this.get(coords);
-
-			trace("s2d", this.s2d);
-			trace("entity", entity);
 			var interaction = new h2d.Interactive(64, 36, this.s2d, entity.polygon.toPolygon().getCollider());
+
 			interaction.onClick = function(event: hxd.Event) {
-				if (state.cursor.coords.x == coords.x && state.cursor.coords.y == coords.y) {
-					state.selected.coords.x = coords.x;
-					state.selected.coords.y = coords.y;
-					state.units[0].coords.x = coords.x;
-					state.units[0].coords.y = coords.y;
+				trace('coords', coords);
+				trace('state', state);
+				if (state.cursor.coords.equals(coords)) {
+					state.selected.coords.load(coords);
+					state.units[0].coords.load(coords);
 				} else {
-					state.cursor.coords.x = coords.x;
-					state.cursor.coords.y = coords.y;
+					state.cursor.coords.load(coords);
 				}
 			}
 		}
+
+		return this;
 	}
 
-	public function coordToPixels(coords: IPoint): IPoint {
+	public function coordToPixels(coords: Coordinates): Coordinates {
 		var colOffset:Int = Math.abs(coords.y) % 2 == 1 ? 0 : - 32;
 
-		return new IPoint(Std.int(this.s2d.width / 2) + coords.x * 64 + colOffset,
-				Std.int(this.s2d.height / 2) + coords.y * 30 - 16);
+		return {
+			x: Std.int(this.s2d.width / 2) + coords.x * 64 + colOffset,
+			y: Std.int(this.s2d.height / 2) + coords.y * 30 - 16,
+		};
 	}
 
-	public function moveTo(entity: Entity):Void {
-		var pixels = coordToPixels(entity.coords);
-
-		entity.component.x = pixels.x + (entity.offset == null ? 0 : entity.offset.x);
-		entity.component.y = pixels.y + (entity.offset == null ? 0 : entity.offset.y);
+	override public function toString(): String {
+		return [for(coords in this.keys()) '[$coords, ${this.get(coords)}]']
+			.join("\n");
 	}
 }

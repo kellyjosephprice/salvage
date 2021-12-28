@@ -6,8 +6,8 @@ PID_FILE=.salvage.pid
 watch:
 	while true; do
 		make run
+		sleep 1
 		inotifywait -re modify --exclude '/\.' .
-		sleep 0.5
 	done
 
 .PHONY=run

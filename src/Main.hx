@@ -24,39 +24,27 @@ class Main extends hxd.App {
 		tf.text = "Salvage WIP";
 		s2d.addChild(tf);
 
-		state = new State({
-			field: null,
+		state = {
+			field: new Field(s2d),
 			selected: {
 				component: null,
-				coords: new IPoint(0, 0),
+				coords: { x: 0, y: 0 },
 			},
 			cursor: {
 				component: null,
-				coords: new IPoint(0, 0),
+				coords: { x: 0, y: 0 },
 			},
 			units: [{
 				component: null,
-				coords: new IPoint(0, 0),
-				offset: new IPoint(16, 0),
+				coords: { x: 0, y: 0 },
+				offset: { x: 16, y: 0 },
 			}, {
 				component: null,
-				coords: new IPoint(0, -1),
-				offset: new IPoint(16, 0),
+				coords: { x: 0, y: -1 },
+				offset: { x: 16, y: 0 },
 			}],
-		});
+		};
 
-		var polygon = new IPolygon([
-			new IPoint(1, 14),
-			new IPoint(31, 4),
-			new IPoint(32, 4),
-			new IPoint(62, 14),
-			new IPoint(62, 29),
-			new IPoint(32, 39),
-			new IPoint(31, 39),
-			new IPoint(1, 29),
-		]);
-
-		state.field = new Field(s2d);
 		state.field.initOnClick(state);
 
 		var selector = new Bitmap(hxd.Res.tileselector.toTile(), s2d);
@@ -68,20 +56,18 @@ class Main extends hxd.App {
 		state.units[0].component = toaster;
 		state.units[1].component = brobear;
 
-		state.field.moveTo(state.selected);
-		state.field.moveTo(state.cursor);
-		state.field.moveTo(state.units[0]);
-		state.field.moveTo(state.units[1]);
+		resolvePosition(state.selected);
+		resolvePosition(state.cursor);
+		resolvePosition(state.units[0]);
+		resolvePosition(state.units[1]);
 
 		function onEvent(event : hxd.Event) {
 			if (event.kind == EKeyUp) { return; }
 
 			switch(event.keyCode) {
 				case 13: {
-					state.units[0].coords.x = state.cursor.coords.x;
-					state.units[0].coords.y = state.cursor.coords.y;
-					state.selected.coords.x = state.cursor.coords.x;
-					state.selected.coords.y = state.cursor.coords.y;
+					state.units[0].coords.load(state.cursor.coords);
+					state.selected.coords.load(state.cursor.coords);
 				}
 				case 37: state.cursor.coords.x -= 1;
 				case 38: state.cursor.coords.y -= 1;
@@ -93,8 +79,15 @@ class Main extends hxd.App {
 	}
 
 	override function update(dt:Float) {
-		state.field.moveTo(state.selected);
-		state.field.moveTo(state.cursor);
-		state.field.moveTo(state.units[0]);
+		resolvePosition(state.selected);
+		resolvePosition(state.cursor);
+		resolvePosition(state.units[0]);
+	}
+
+	public function resolvePosition(entity: Entity):Void {
+		var pixels = state.field.coordToPixels(entity.coords);
+
+		entity.component.x = pixels.x + (entity.offset == null ? 0 : entity.offset.x);
+		entity.component.y = pixels.y + (entity.offset == null ? 0 : entity.offset.y);
 	}
 }
