@@ -1,5 +1,6 @@
-hello.hl
-hello.js*
+salvage.hl
 out
 
 *.pid
+
+tests.hl

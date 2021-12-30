@@ -2,21 +2,27 @@
 
 PID_FILE=.salvage.pid
 
-.PHONY=watch
-watch:
-	while true; do
-		make run
-		sleep 1
-		inotifywait -re modify --exclude '/\.' .
-	done
+define watch-loop
+while true; do
+	printf "\033c"
+	echo $(1)
+	sleep 0.5
+	$(2)
+	inotifywait -qre modify --exclude '/\.' .
+done
+endef
 
-.PHONY=run
+.PHONY: watch
+watch:
+	$(call watch-loop, Starting Salvage!, make run)
+
+.PHONY: run
 run: stop build
-	hl hello.hl &
+	hl salvage.hl &
 	PID=$$!
 	echo $${PID} > ${PID_FILE}
 
-.PHONY=stop
+.PHONY: stop
 stop:
 	if test -f ${PID_FILE}; then
 		PID=`cat ${PID_FILE}`
@@ -24,15 +30,30 @@ stop:
 		kill -9 $$PID || true
 	fi
 
-.PHONY=build
-build: hello.hl
+.PHONY: build
+build: salvage.hl
 
-hello.hl: assets $(wildcard src/*) compile.hxml
+.PHONY: watch-tests
+watch-tests:
+	$(call watch-loop, Running tests..., make tests)
+
+.PHONY: tests
+tests: tests.hl
+	hl tests.hl
+
+tests.hl: tests.hxml $(wildcard src/*) $(wildcard tests/*)
+	haxe tests.hxml
+
+.PHONY: deps
+deps:
+	haxelib install all
+
+salvage.hl: assets $(wildcard src/*) compile.hxml
 	@echo -n "\033[31m"
 	haxe compile.hxml
 	@echo -n "\033[0m"
 
-.PHONY=assets
+.PHONY: assets
 assets: $(wildcard res/*)
 
 res/brobear.png: assets/brobear.png
@@ -50,5 +71,7 @@ res/tileselector.png: assets/tile-selector.png
 res/tileselectorgreen.png: assets/tile-selector-green.png
 	cp assets/tile-selector-green.png res/tileselectorgreen.png
 
+.PHONY: clean
 clean: stop
-	rm -rf hello.hl
+	rm -rf salvage.hl
+	rm -rf tests.hl

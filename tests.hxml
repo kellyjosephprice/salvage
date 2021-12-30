@@ -1,7 +1,9 @@
 -cp src
+-cp tests
+-lib buddy
+-lib utest
 -lib heaps:1.9.1
 -lib hlsdl:1.10.0
 -lib random:1.4.1
--hl salvage.hl
--main Main
--D windowSize=1280x720
+-hl tests.hl
+-main TestSuite
