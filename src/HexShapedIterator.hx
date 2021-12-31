@@ -25,8 +25,6 @@ class HexShapedIterator {
 			}
 		}
 
-		trace(this.current);
-
 		return this.current.toOddr();
 	}
 

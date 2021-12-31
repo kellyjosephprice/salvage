@@ -5,16 +5,14 @@ PID_FILE=.salvage.pid
 define watch-loop
 while true; do
 	printf "\033c"
-	echo $(1)
-	sleep 0.5
-	$(2)
+	$(1)
 	inotifywait -qre modify --exclude '/\.' .
 done
 endef
 
 .PHONY: watch
 watch:
-	$(call watch-loop, Starting Salvage!, make run)
+	$(call watch-loop, make run)
 
 .PHONY: run
 run: stop build
@@ -35,7 +33,7 @@ build: salvage.hl
 
 .PHONY: watch-tests
 watch-tests:
-	$(call watch-loop, Running tests..., make tests)
+	$(call watch-loop, make tests)
 
 .PHONY: tests
 tests: tests.hl
