@@ -5,6 +5,8 @@ import h2d.col.IPolygon;
 import haxe.ds.ObjectMap;
 
 import Entity;
+import utils.Coordinates;
+import utils.HexShapedIterator;
 
 class Field extends ObjectMap<IPoint, Entity> {
 	static var hex(default, null): IPolygon = new IPolygon([
@@ -28,8 +30,6 @@ class Field extends ObjectMap<IPoint, Entity> {
 		for(coords in new HexShapedIterator(4)) {
 			var tile = new Bitmap(hxd.Res.sandtile.toTile(), s2d);
 			var pixels = this.coordToPixels(coords);
-
-			trace("in iterator", coords);
 
 			tile.x = pixels.x;
 			tile.y = pixels.y;

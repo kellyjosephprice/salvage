@@ -1,4 +1,6 @@
-import Coordinates;
+package utils;
+
+import utils.Coordinates;
 
 // https://www.redblobgames.com/grids/hexagons/#coordinates
 @:structInit class CubeCoordinates {

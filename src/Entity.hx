@@ -1,8 +1,7 @@
 import h2d.Bitmap;
-import h2d.col.IPoint;
 import h2d.col.IPolygon;
 
-import Coordinates;
+import utils.Coordinates;
 
 @:structInit class Entity {
 	public var component: Bitmap;

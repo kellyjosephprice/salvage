@@ -1,3 +1,5 @@
+package utils;
+
 import h2d.col.IPoint;
 
 @:structInit class Coordinates extends IPoint {

@@ -46,9 +46,9 @@ tests.hl: tests.hxml $(wildcard src/*) $(wildcard tests/*)
 deps:
 	haxelib install all
 
-salvage.hl: assets $(wildcard src/*) compile.hxml
+salvage.hl: assets $(wildcard src/*) build.hxml
 	@echo -n "\033[31m"
-	haxe compile.hxml
+	haxe build.hxml
 	@echo -n "\033[0m"
 
 .PHONY: assets
@@ -68,6 +68,9 @@ res/tileselector.png: assets/tile-selector.png
 
 res/tileselectorgreen.png: assets/tile-selector-green.png
 	cp assets/tile-selector-green.png res/tileselectorgreen.png
+
+res/pathdotgreen.png: assets/path-dot-green.png
+	cp assets/path-dot-green.png res/pathdotgreen.png
 
 .PHONY: clean
 clean: stop

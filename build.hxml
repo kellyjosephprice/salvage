@@ -1,6 +1,6 @@
 -cp src
--lib heaps:1.9.1
--lib hlsdl:1.10.0
+-lib heaps:1.10.0
+-lib hlsdl:1.13.0
 -lib random:1.4.1
 -hl salvage.hl
 -main Main

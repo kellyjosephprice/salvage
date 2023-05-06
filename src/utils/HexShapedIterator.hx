@@ -1,4 +1,6 @@
-import Coordinates;
+package utils;
+
+import utils.Coordinates;
 
 class HexShapedIterator {
 	public var size: Int;
